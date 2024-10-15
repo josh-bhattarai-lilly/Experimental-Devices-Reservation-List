@@ -1,4 +1,5 @@
-.banner {
+/* Scoped styles for the banner */
+.banner-wrapper .banner {
     display: flex;
     align-items: center;
     background-color: #D52B1E; /* Hex color for the banner */
@@ -6,51 +7,51 @@
     height: 60px; /* Set a fixed height for the banner */
 }
 
-.banner-logo {
+.banner-wrapper .banner-logo {
     position: relative;
     display: flex; /* Use flexbox to align text and logo */
     align-items: center; /* Center align vertically */
     text-decoration: none;
 }
 
-.default-logo,
-.hover-logo {
+.banner-wrapper .default-logo,
+.banner-wrapper .hover-logo {
     max-height: 60px; /* Limit height to a smaller size */
     width: auto; /* Maintain aspect ratio */
 }
 
-.hover-logo {
+.banner-wrapper .hover-logo {
     display: none; /* Hide hover logo by default */
 }
 
-.banner-logo:hover .default-logo {
+.banner-wrapper .banner-logo:hover .default-logo {
     display: none; /* Hide default on hover */
 }
 
-.banner-logo:hover .hover-logo {
+.banner-wrapper .banner-logo:hover .hover-logo {
     display: block; /* Show hover logo on hover */
 }
 
-.logo-text {
+.banner-wrapper .logo-text {
     color: white; /* Default text color */
     margin-left: -10px; /* Space between logo and text */
     font-size: 1.5em; /* Adjust size as needed */
 }
 
-.banner-logo:hover .logo-text {
+.banner-wrapper .banner-logo:hover .logo-text {
     color: black; /* Change text color on hover */
 }
 
-.banner-buttons-left {
+.banner-wrapper .banner-buttons-left {
     display: flex; /* Use flexbox to arrange buttons horizontally */
     align-items: center; /* Center align buttons vertically */
 }
 
-.banner-buttons-right {
+.banner-wrapper .banner-buttons-right {
     margin-left: auto; /* Push this container to the right */
 }
 
-.button {
+.banner-wrapper .button {
     background-color: transparent; /* No background color */
     color: white; /* Text color is white by default */
     padding: 10px 15px; /* Button padding */
@@ -60,7 +61,7 @@
     border: 2px solid transparent; /* Optional: Add border with transparent color */
 }
 
-.button:hover {
+.banner-wrapper .button:hover {
     background-color: #A39891; /* Change background on hover */
     color: white; /* Keep text color white on hover */
     border: 2px solid white; /* Optional: Change border color on hover */

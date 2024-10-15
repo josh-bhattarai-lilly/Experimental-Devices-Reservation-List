@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Device Confirmation</title>
+</head>
+<body>
+    <h2>Are you sure you want to delete {{ device.serial_number }}?</h2>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Confirm Delete</button>
+        <a href="{% url 'list_devices' %}">Cancel</a>
+    </form>
+</body>
+</html>
