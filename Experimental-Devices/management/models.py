@@ -11,7 +11,10 @@ class Device(models.Model):
         abstract = True  # This makes the model abstract, so it won't create a table in the database
 
     def __str__(self):
-        return f"{self.serial_number}"
+        return f"{self.serial_number} - {self.get_device_type()}"
+
+    def get_device_type(self):
+        return self.__class__.__name__
 
 class VisionPro(Device):
     model_name = models.CharField(max_length=100)  # Additional field specific to VisionPro devices

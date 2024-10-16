@@ -11,15 +11,15 @@
 <body>
     <div class="banner-wrapper">  <!-- New wrapper class -->
         <div class="banner">
-            <a href="{% url 'reservation' %}" class="banner-logo">
+            <a href="{% url 'management' %}" class="banner-logo">
                 <img src="{% static 'images/LillyLogo_White.png' %}" alt="Lilly Logo White" class="default-logo">
                 <img src="{% static 'images/LillyLogo_Black.png' %}" alt="Lilly Logo Black" class="hover-logo">
                 <span class="logo-text">| EDRL</span>
             </a>
             <div class="banner-buttons-left">
                 <a href="{% url 'free_devices' %}" class="button">Available Devices</a>
-                <a href="{% url 'reservation' %}" class="button">Reservation List</a>
-                <a href="{% url 'reservation' %}" class="button">Survey Information</a>
+                <a href="{% url 'management' %}" class="button">Reservation List</a>
+                <a href="{% url 'management' %}" class="button">Survey Information</a>
             </div>
             <div class="banner-buttons-right">
                 <a href="{% url 'admin_dashboard' %}" class="button">Admin Dashboard</a>

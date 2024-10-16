@@ -6,20 +6,20 @@ from django.apps import apps
 from .forms import AddDeviceForm, DeviceForm
 
 
-class ReservationView(TemplateView):
-    template_name = "reservation/reservation.html"
+class ManagementView(TemplateView):
+    template_name = "management/management.html"
 
-reservation_view = ReservationView.as_view()
+management_view = ManagementView.as_view()
 
 
 class AdminDashboardView(TemplateView):
-    template_name = "reservation/admin_dashboard.html"
+    template_name = "management/admin_dashboard.html"
 
 dashboard_view = AdminDashboardView.as_view()
 
 
 class AddDeviceView(TemplateView):
-    template_name = "reservation/add_device.html"
+    template_name = "management/add_device.html"
 
     def get(self, request, *args, **kwargs):
         form = AddDeviceForm()
@@ -33,7 +33,7 @@ class AddDeviceView(TemplateView):
             description = form.cleaned_data['description']
 
             # Get the selected device class
-            DeviceClass = apps.get_model(app_label='reservation', model_name=device_type)
+            DeviceClass = apps.get_model(app_label='management', model_name=device_type)
 
             # Create a new instance of the selected subclass
             device = DeviceClass.objects.create(serial_number=serial_number, description=description)
@@ -47,7 +47,7 @@ add_device_view = AddDeviceView.as_view()
 
 
 class ListDevicesView(TemplateView):
-    template_name = "reservation/list_devices.html"
+    template_name = "management/list_devices.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -70,7 +70,7 @@ list_devices_view = ListDevicesView.as_view()
 
 
 class EditDeviceView(TemplateView):
-    template_name = "reservation/edit_device.html"
+    template_name = "management/edit_device.html"
 
     def get(self, request, device_id):
         # Attempt to find the device in subclasses
@@ -129,28 +129,7 @@ def delete_device_view(request, device_id):
         device.delete()
         return redirect('list_devices')  # Redirect to the list view after deletion
 
-    return render(request, 'reservation/delete_device_confirmation.html', {'device': device})
+    return render(request, 'management/delete_device_confirmation.html', {'device': device})
 
-class FreeDevicesView(TemplateView):
-    template_name = "reservation/free_devices.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        # Get all ContentTypes for models that are subclasses of Device
-        device_type = ContentType.objects.get_for_model(Device)
-
-        # Find all subclasses of Device
-        subclasses = [model for model in apps.get_models() if issubclass(model, Device) and model is not Device]
-
-        # Query all instances of each subclass where is_reserved is false and combine them
-        free_devices = []
-        for subclass in subclasses:
-            free_devices.extend(
-                subclass.objects.filter(is_reserved=False))  # Fetch only instances where is_reserved is False
-
-        context['devices'] = free_devices  # Add to context
-        return context
-
-free_devices_view = FreeDevicesView.as_view()
 
