@@ -1,0 +1,56 @@
+{% include 'partials/banner.html' %}
+{% load static %}
+
+{% block content %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/your_devices.css' %}">  <!-- Link to the CSS file -->
+
+  <h2>Your Reserved Devices</h2>
+
+  {% if devices %}
+    <table>
+      <thead>
+        <tr>
+          <th>Device Type</th>
+          <th>Serial Number</th>
+          <th>Description</th>
+          <th>Reserved From</th>
+          <th>Reserved At</th>
+          <th>Time Elapsed</th>
+          <th>Actions</th> <!-- New header for actions -->
+        </tr>
+      </thead>
+      <tbody>
+        {% for device in devices %}
+          <tr>
+            <td>{{ device.get_device_type }} </td>
+            <td>{{ device.serial_number }}</td>
+            <td>
+              {% if device.description %}
+                {{ device.description }}
+              {% else %}
+                <span class="no-content">No current description</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if device.location %}
+                {{ device.location }}
+              {% else %}
+                <span class="no-content">No location listed</span>
+              {% endif %}
+            </td>
+            <td>{{ device.reserved_at|date:"Y-m-d H:i:s" }}</td>
+            <td>{{ device.time_elapsed }}</td>
+            <td>
+              <form method="post" action="{% url 'return_device' device.serial_number %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Return Device</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>You have no devices reserved.</p>
+  {% endif %}
+{% endblock %}

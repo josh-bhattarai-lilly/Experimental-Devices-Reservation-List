@@ -18,11 +18,13 @@
             </a>
             <div class="banner-buttons-left">
                 <a href="{% url 'free_devices' %}" class="button">Available Devices</a>
-                <a href="{% url 'management' %}" class="button">Reservation List</a>
-                <a href="{% url 'management' %}" class="button">Survey Information</a>
+                <a href="{% url 'your_devices' %}" class="button">Your Devices</a>
+                <a href="{% url 'feedback_view' %}" class="button">Feedback</a>
             </div>
             <div class="banner-buttons-right">
-                <a href="{% url 'admin_dashboard' %}" class="button">Admin Dashboard</a>
+                {% if request.user.is_staff or request.user.is_superuser %}
+                    <a href="{% url 'admin_dashboard' %}" class="button">Admin Dashboard</a>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -1,8 +1,14 @@
 {% include 'partials/banner.html' %}
+{% load static %}
 
-
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+</head>
 <div class="admin-dashboard-content">
-    <a href="{% url 'admin:index' %}" class="admin-button">Admin Console</a>
+    {% if request.user.is_superuser %}
+        <a href="{% url 'admin:index' %}" class="admin-button">Admin Console</a>
+    {% endif %}
     <a href="{% url 'add_device' %}" class="admin-button">Add a device</a>
     <a href="{% url 'list_devices' %}" class="admin-button">View all Devices</a>
 </div>

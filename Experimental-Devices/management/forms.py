@@ -4,6 +4,7 @@ from .models import Device
 
 class AddDeviceForm(forms.Form):
     device_type = forms.ChoiceField(choices=[], label="Device Type")
+    location = forms.CharField(max_length=200, label="Device Location", required=False)
     serial_number = forms.CharField(max_length=100, label="Serial Number")
     description = forms.CharField(widget=forms.Textarea, label="Description", required=False)
 
@@ -16,4 +17,4 @@ class AddDeviceForm(forms.Form):
 class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
-        fields = ['serial_number', 'description', 'is_reserved', 'reserved_to']  # Include fields you want to edit
+        fields = ['serial_number', 'description', 'location', 'is_reserved', 'reserved_to']  # Include fields you want to edit

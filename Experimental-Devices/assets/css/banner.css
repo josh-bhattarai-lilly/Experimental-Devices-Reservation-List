@@ -1,3 +1,9 @@
+/* Add this at the top of your existing CSS file */
+body {
+    background-color: #F3F0ED; /* Set background color for all pages using this banner */
+    margin: 0; /* Remove default margin */
+}
+
 /* Scoped styles for the banner */
 .banner-wrapper .banner {
     display: flex;
@@ -35,7 +41,9 @@
 .banner-wrapper .logo-text {
     color: white; /* Default text color */
     margin-left: -10px; /* Space between logo and text */
-    font-size: 1.5em; /* Adjust size as needed */
+    font-size: 2em; /* Adjust size as needed */
+    font-family: Arial, sans-serif; /* Specify Arial as the primary font */
+    font-weight: bold; /* Set the font weight to bold */
 }
 
 .banner-wrapper .banner-logo:hover .logo-text {
@@ -59,10 +67,11 @@
     text-decoration: none; /* Remove underline */
     border-radius: 5px; /* Rounded corners */
     border: 2px solid transparent; /* Optional: Add border with transparent color */
+    font-family: Arial, sans-serif; /* Specify Arial as the primary font */
 }
 
 .banner-wrapper .button:hover {
     background-color: #A39891; /* Change background on hover */
-    color: white; /* Keep text color white on hover */
+    color: black; /* Keep text color white on hover */
     border: 2px solid white; /* Optional: Change border color on hover */
 }

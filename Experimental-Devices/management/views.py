@@ -30,6 +30,7 @@ class AddDeviceView(TemplateView):
         if form.is_valid():
             device_type = form.cleaned_data['device_type']
             serial_number = form.cleaned_data['serial_number']
+            location = form.cleaned_data['location']
             description = form.cleaned_data['description']
 
             # Get the selected device class
@@ -68,6 +69,12 @@ class ListDevicesView(TemplateView):
 
 list_devices_view = ListDevicesView.as_view()
 
+class FeedbackView(TemplateView):
+    template_name = "management/feedback.html"
+
+
+feedback_view = FeedbackView.as_view()
+
 
 class EditDeviceView(TemplateView):
     template_name = "management/edit_device.html"
@@ -77,7 +84,7 @@ class EditDeviceView(TemplateView):
         device = None
         for subclass in (VisionPro, ARVRDevice):  # Add more subclasses here if necessary
             try:
-                device = subclass.objects.get(id=device_id)
+                device = subclass.objects.get(serial_number=device_id)
                 break
             except subclass.DoesNotExist:
                 continue
@@ -92,7 +99,7 @@ class EditDeviceView(TemplateView):
         device = None
         for subclass in (VisionPro, ARVRDevice):
             try:
-                device = subclass.objects.get(id=device_id)
+                device = subclass.objects.get(serial_number=device_id)
                 break
             except subclass.DoesNotExist:
                 continue
@@ -117,7 +124,7 @@ def delete_device_view(request, device_id):
     device = None
     for subclass in (VisionPro, ARVRDevice):  # Add more subclasses if necessary
         try:
-            device = subclass.objects.get(id=device_id)
+            device = subclass.objects.get(serial_number=device_id)
             break
         except subclass.DoesNotExist:
             continue

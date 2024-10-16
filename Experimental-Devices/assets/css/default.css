@@ -1,0 +1,32 @@
+/* default.css */
+
+
+h1 {
+    color: #D52B1E; /* Lilly red */
+    text-align: center;
+}
+
+p {
+    text-align: center;
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.logo {
+    display: block;
+    margin: 0 auto 20px;
+    max-width: 200px; /* Adjust the size as needed */
+}
+
+.link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.1em;
+    color: #D52B1E; /* Lilly red */
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
