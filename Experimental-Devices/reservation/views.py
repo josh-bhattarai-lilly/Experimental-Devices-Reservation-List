@@ -131,3 +131,26 @@ def delete_device_view(request, device_id):
 
     return render(request, 'reservation/delete_device_confirmation.html', {'device': device})
 
+class FreeDevicesView(TemplateView):
+    template_name = "reservation/free_devices.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get all ContentTypes for models that are subclasses of Device
+        device_type = ContentType.objects.get_for_model(Device)
+
+        # Find all subclasses of Device
+        subclasses = [model for model in apps.get_models() if issubclass(model, Device) and model is not Device]
+
+        # Query all instances of each subclass where is_reserved is false and combine them
+        free_devices = []
+        for subclass in subclasses:
+            free_devices.extend(
+                subclass.objects.filter(is_reserved=False))  # Fetch only instances where is_reserved is False
+
+        context['devices'] = free_devices  # Add to context
+        return context
+
+free_devices_view = FreeDevicesView.as_view()
+
