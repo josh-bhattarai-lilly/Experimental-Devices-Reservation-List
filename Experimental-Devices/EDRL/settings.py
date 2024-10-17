@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 from pathlib import Path
+import json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,9 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.microsoft',
     'management',
     'reservation'
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -49,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'EDRL.urls'
@@ -70,7 +78,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'EDRL.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -101,6 +108,32 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+
+# Define the path to the secrets.json file
+with open(os.path.join(BASE_DIR, 'secrets.json')) as f:
+    secrets = json.load(f)
+
+
+
+# Use the values from the secrets.json file in your configuration
+SOCIALACCOUNT_PROVIDERS = {
+    'microsoft': {
+        'APP': {
+            'client_id': secrets['client_id'],
+            'secret': secrets['client_secret'],
+            'key': ''
+        },
+        'AUTH_PARAMS': {
+            'scope': 'openid email profile'
+        }
+    }
+}
+
+OAUTH2_AUTHORIZE_URL = f'https://login.microsoftonline.com/{secrets["tenant_id"]}/oauth2/v2.0/authorize'
+OAUTH2_TOKEN_URL = f'https://login.microsoftonline.com/{secrets["tenant_id"]}/oauth2/v2.0/token'
+SITE_ID = 1  # Adjust based on your configuration
+LOGIN_REDIRECT_URL = '/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
