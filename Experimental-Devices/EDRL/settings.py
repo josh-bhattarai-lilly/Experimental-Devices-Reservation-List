@@ -38,15 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.microsoft',
+    'lilly_auth',
     'management',
     'reservation'
 ]
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -56,7 +51,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'EDRL.urls'
@@ -78,6 +72,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'EDRL.wsgi.application'
+
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -109,32 +104,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-
-# Define the path to the secrets.json file
-with open(os.path.join(BASE_DIR, 'secrets.json')) as f:
-    secrets = json.load(f)
-
-
-
-# Use the values from the secrets.json file in your configuration
-SOCIALACCOUNT_PROVIDERS = {
-    'microsoft': {
-        'APP': {
-            'client_id': secrets['client_id'],
-            'secret': secrets['client_secret'],
-            'key': ''
-        },
-        'AUTH_PARAMS': {
-            'scope': 'openid email profile'
-        }
-    }
-}
-
-OAUTH2_AUTHORIZE_URL = f'https://login.microsoftonline.com/{secrets["tenant_id"]}/oauth2/v2.0/authorize'
-OAUTH2_TOKEN_URL = f'https://login.microsoftonline.com/{secrets["tenant_id"]}/oauth2/v2.0/token'
-SITE_ID = 1  # Adjust based on your configuration
-LOGIN_REDIRECT_URL = '/'
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -161,3 +130,26 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Define the path to the secrets.json file
+with open(os.path.join(BASE_DIR, 'secrets.json')) as f:
+    secrets = json.load(f)
+
+# MSAL configuration
+MSAL_CONFIG = {
+    'client_id': secrets['client_id'],
+    'client_secret': secrets['client_secret_value'],
+    'authority': f'https://login.microsoftonline.com/{secrets["tenant_id"]}',
+    'redirect_uri': 'http://localhost:8000/auth/callback/',
+    'scopes': ['User.Read'],
+}
+
+MSAL_CLIENT_ID = secrets['client_id']
+MSAL_CLIENT_SECRET = secrets['client_secret_value']
+MSAL_AUTHORITY = f'https://login.microsoftonline.com/{secrets['tenant_id']}'
+MSAL_REDIRECT_URI = 'http://localhost:8000/auth/callback/'
+MSAL_SCOPES = [
+    'User.Read',
+    'User.ReadBasic.All'
+]
+MSAL_USER_INFO_ENDPOINT = 'https://graph.microsoft.com/v1.0/me'
