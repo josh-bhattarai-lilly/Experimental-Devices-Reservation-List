@@ -1,5 +1,6 @@
 from django import forms
 from django.apps import apps
+from django.contrib.auth import get_user_model  # Import get_user_model to avoid loading issues
 from .models import Device
 
 class AddDeviceForm(forms.Form):
@@ -17,14 +18,9 @@ class AddDeviceForm(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
         is_reserved = cleaned_data.get('is_reserved')
-        reserved_to = cleaned_data.get('reserved_to')
 
         # Logic to set fields to None if conditions are met
         if is_reserved is None:
-            cleaned_data['reserved_to'] = None
-            cleaned_data['reserved_at'] = None
-        elif reserved_to is None:
-            cleaned_data['is_reserved'] = None
             cleaned_data['reserved_at'] = None
 
         return cleaned_data
@@ -33,14 +29,12 @@ class AddDeviceForm(forms.Form):
 class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
-        fields = ['serial_number', 'description', 'location', 'is_reserved',
-                  'reserved_to']  # Include fields you want to edit
+        fields = ['serial_number', 'description', 'location', 'is_reserved']  # Include fields you want to edit
 
     def clean(self):
         cleaned_data = super().clean()
 
         is_reserved = cleaned_data.get('is_reserved')
-        reserved_to = cleaned_data.get('reserved_to')
 
         # If is_reserved is False, set reserved_to and reserved_at to None
         if is_reserved is False:

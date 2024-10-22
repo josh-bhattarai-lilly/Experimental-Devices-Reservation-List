@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings  # Import settings to refer to the custom user model
 from django.apps import apps
 from django.utils import timezone
 from django.utils.timesince import timesince
@@ -7,13 +7,16 @@ from django.utils.timesince import timesince
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+# Use settings.AUTH_USER_MODEL to refer to the custom user model
+CustomUser = settings.AUTH_USER_MODEL
+
+
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)  # Updated to use CustomUser
     is_manager = models.BooleanField(default=False)  # Field to indicate if the user is a manager
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
-
 
 
 class Device(models.Model):
@@ -21,7 +24,7 @@ class Device(models.Model):
     description = models.TextField(blank=True)  # Short description of the device
     location = models.CharField(max_length=255, blank=True)  # Location of the device
     is_reserved = models.BooleanField(default=False)  # Indicates if the device is reserved
-    reserved_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)  # User who reserved the device
+    reserved_to = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)  # Updated to use CustomUser
     reserved_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
@@ -81,6 +84,7 @@ class VisionPro(Device):
 
     def __str__(self):
         return f"VisionPro {self.model_name} - {super().__str__()}"
+
 
 class ARVRDevice(Device):
     model_type = models.CharField(max_length=100)  # Additional field specific to AR/VR devices

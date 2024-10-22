@@ -135,6 +135,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 with open(os.path.join(BASE_DIR, 'secrets.json')) as f:
     secrets = json.load(f)
 
+# Add this line to use the custom user model
+AUTH_USER_MODEL = 'lilly_auth.CustomUser'
+
 # MSAL configuration
 MSAL_CONFIG = {
     'client_id': secrets['client_id'],
@@ -146,10 +149,6 @@ MSAL_CONFIG = {
 
 MSAL_CLIENT_ID = secrets['client_id']
 MSAL_CLIENT_SECRET = secrets['client_secret_value']
-MSAL_AUTHORITY = f'https://login.microsoftonline.com/{secrets['tenant_id']}'
+MSAL_AUTHORITY = f'https://login.microsoftonline.com/{secrets["tenant_id"]}'
 MSAL_REDIRECT_URI = 'http://localhost:8000/auth/callback/'
-MSAL_SCOPES = [
-    'User.Read',
-    'User.ReadBasic.All'
-]
 MSAL_USER_INFO_ENDPOINT = 'https://graph.microsoft.com/v1.0/me'

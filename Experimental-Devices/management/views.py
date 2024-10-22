@@ -4,6 +4,9 @@ from django.views.generic import TemplateView
 from django.contrib.contenttypes.models import ContentType
 from django.apps import apps
 from .forms import AddDeviceForm, DeviceForm
+from lilly_auth.models import CustomUser
+from django.contrib import messages
+from django.views import View
 
 
 class ManagementView(TemplateView):
@@ -137,6 +140,67 @@ def delete_device_view(request, device_id):
         return redirect('list_devices')  # Redirect to the list view after deletion
 
     return render(request, 'management/delete_device_confirmation.html', {'device': device})
+
+
+class ListUsersView(TemplateView):
+    template_name = "management/list_users.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['users'] = CustomUser.objects.all()
+        return context
+
+list_users_view = ListUsersView.as_view()
+
+
+class DeleteUserView(View):
+    def get(self, request, user_id):
+        user = get_object_or_404(CustomUser, id=user_id)
+        user.delete()
+        messages.success(request, f'User {user.username} has been deleted.')
+        return redirect('list_users')
+
+
+delete_user = DeleteUserView.as_view()
+
+
+class PromoteToStaffView(View):
+    def get(self, request, user_id):
+        user = get_object_or_404(CustomUser, id=user_id)
+        user.is_staff = True
+        user.save()
+        messages.success(request, f'User {user.username} has been promoted to staff.')
+        return redirect('list_users')
+
+
+promote_to_staff = PromoteToStaffView.as_view()
+
+
+class PromoteToAdminView(View):
+    def get(self, request, user_id):
+        user = get_object_or_404(CustomUser, id=user_id)
+        user.is_superuser = True
+        user.is_staff = True  # Make sure they are staff as well
+        user.save()
+        messages.success(request, f'User {user.username} has been promoted to admin.')
+        return redirect('list_users')
+
+
+promote_to_admin = PromoteToAdminView.as_view()
+
+
+class DemoteToUserView(View):
+    def get(self, request, user_id):
+        user = get_object_or_404(CustomUser, id=user_id)
+        user.is_staff = False
+        user.is_superuser = False
+        user.save()
+        messages.success(request, f'User {user.username} has been demoted to user.')
+        return redirect('list_users')
+
+
+demote_to_user = DemoteToUserView.as_view()
+
 
 
 
