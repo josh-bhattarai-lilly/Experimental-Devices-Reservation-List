@@ -1,11 +1,8 @@
 from django.db import models
-from django.conf import settings  # Import settings to refer to the custom user model
 from django.apps import apps
 from django.utils import timezone
 from django.utils.timesince import timesince
 from django.contrib.auth import get_user_model
-
-# Use settings.AUTH_USER_MODEL to refer to the custom user model
 CustomUser = get_user_model()  # Dynamically get the custom user model
 
 

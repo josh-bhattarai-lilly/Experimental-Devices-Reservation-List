@@ -1,10 +1,7 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import  get_object_or_404, redirect
 from management.models import Device, VisionPro, ARVRDevice
 from django.views.generic import ListView, TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
-from django.conf import settings
 from django.urls import reverse
 from .models import UserReservationRequest, UserReservationReturn
 from django.contrib.contenttypes.models import ContentType
