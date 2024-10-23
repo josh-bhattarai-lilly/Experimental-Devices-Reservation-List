@@ -1,4 +1,4 @@
 /staticfiles/
-/db.sqlite3
 .venv/
 /Experimental-Devices/secrets.json
+/Experimental-Devices/db.sqlite3

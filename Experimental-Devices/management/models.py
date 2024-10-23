@@ -3,12 +3,10 @@ from django.conf import settings  # Import settings to refer to the custom user 
 from django.apps import apps
 from django.utils import timezone
 from django.utils.timesince import timesince
-
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+from django.contrib.auth import get_user_model
 
 # Use settings.AUTH_USER_MODEL to refer to the custom user model
-CustomUser = settings.AUTH_USER_MODEL
+CustomUser = get_user_model()  # Dynamically get the custom user model
 
 
 class Profile(models.Model):
@@ -24,11 +22,18 @@ class Device(models.Model):
     description = models.TextField(blank=True)  # Short description of the device
     location = models.CharField(max_length=255, blank=True)  # Location of the device
     is_reserved = models.BooleanField(default=False)  # Indicates if the device is reserved
-    reserved_to = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)  # Updated to use CustomUser
+    reserved_to = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
     reserved_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         abstract = True  # This makes the model abstract, so it won't create a table in the database
+
+    @property
+    def id(self):
+        """
+        Override the id property to return the serial_number.
+        """
+        return self.serial_number
 
     @classmethod
     def get_all_subclasses(cls):
@@ -87,6 +92,13 @@ class VisionPro(Device):
 
 
 class ARVRDevice(Device):
+    model_type = models.CharField(max_length=100)  # Additional field specific to AR/VR devices
+
+    def __str__(self):
+        return f"AR/VR Device {self.model_type} - {super().__str__()}"
+
+
+class MetaRayBan(Device):
     model_type = models.CharField(max_length=100)  # Additional field specific to AR/VR devices
 
     def __str__(self):

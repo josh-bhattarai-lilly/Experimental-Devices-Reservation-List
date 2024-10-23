@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.mail import send_mail
+from django.conf import settings
 
 class CustomUser(AbstractUser):
     # Add any extra fields you want to store
@@ -10,3 +12,13 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    def send_user_email(self, subject, message):
+        if self.email:
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [self.email],
+                fail_silently=False,
+            )

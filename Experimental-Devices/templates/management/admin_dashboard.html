@@ -6,10 +6,16 @@
     <title>Admin Dashboard</title>
 </head>
 <div class="admin-dashboard-content">
+    <br>
     {% if request.user.is_superuser %}
         <a href="{% url 'admin:index' %}" class="admin-button">Admin Console</a>
     {% endif %}
+    <br>
     <a href="{% url 'add_device' %}" class="admin-button">Add a device</a>
+    <br>
     <a href="{% url 'list_devices' %}" class="admin-button">View all Devices</a>
+    <br>
     <a href="{% url 'list_users' %}" class="admin-button">View all Users</a>
+    <br>
+    <a href="{% url 'send_email' %}" class="admin-button">Send Email</a>
 </div>

@@ -7,6 +7,9 @@ from .forms import AddDeviceForm, DeviceForm
 from lilly_auth.models import CustomUser
 from django.contrib import messages
 from django.views import View
+from reservation.models import UserReservationRequest
+from reservation.models import UserReservationReturn
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class ManagementView(TemplateView):
@@ -17,6 +20,10 @@ management_view = ManagementView.as_view()
 
 class AdminDashboardView(TemplateView):
     template_name = "management/admin_dashboard.html"
+
+    def get(self, request, *args, **kwargs):
+        context={}
+        return render(request, self.template_name, context)
 
 dashboard_view = AdminDashboardView.as_view()
 
@@ -40,7 +47,7 @@ class AddDeviceView(TemplateView):
             DeviceClass = apps.get_model(app_label='management', model_name=device_type)
 
             # Create a new instance of the selected subclass
-            device = DeviceClass.objects.create(serial_number=serial_number, description=description)
+            device = DeviceClass.objects.create(serial_number=serial_number, description=description, location=location)
             device.save()
             return redirect('list_devices')  # Redirect to the device list view after adding
 
@@ -202,5 +209,34 @@ class DemoteToUserView(View):
 demote_to_user = DemoteToUserView.as_view()
 
 
+class SendEmaiLView(View):
+    def get(self, request):
+        user = get_object_or_404(CustomUser, id=request.user.id)
+        user.send_user_email('subject', 'test')
+        return redirect('admin_dashboard')
 
+
+send_email_view = SendEmaiLView.as_view()
+
+
+class UserReservationRequestListView(LoginRequiredMixin, TemplateView):
+    template_name = 'management/user_reservation_requests_list.html'  # Update with your template path
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reservation_requests'] = UserReservationRequest.objects.all().order_by('-created_at')
+        return context
+
+user_reservation_request_list_view = UserReservationRequestListView.as_view()
+
+
+class UserReservationReturnListView(LoginRequiredMixin, TemplateView):
+    template_name = 'management/user_reservation_returns_list.html'  # Update with your template path
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reservation_returns'] = UserReservationReturn.objects.all().order_by('-created_at')
+        return context
+
+user_reservation_return_list_view = UserReservationReturnListView.as_view()
 

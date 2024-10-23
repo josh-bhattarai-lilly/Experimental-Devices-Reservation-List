@@ -135,8 +135,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 with open(os.path.join(BASE_DIR, 'secrets.json')) as f:
     secrets = json.load(f)
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp-z1-nomx.lilly.com'
+EMAIL_PORT = 25
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = 'ExperimentalDevices@lilly.com'  # Default from email, set to the group email
+
 # Add this line to use the custom user model
 AUTH_USER_MODEL = 'lilly_auth.CustomUser'
+
 
 # MSAL configuration
 MSAL_CONFIG = {

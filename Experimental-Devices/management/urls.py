@@ -15,5 +15,7 @@ urlpatterns = [
     path('users/promote-staff/<int:user_id>/', views.promote_to_staff, name='promote_to_staff'),
     path('users/promote-admin/<int:user_id>/', views.promote_to_admin, name='promote_to_admin'),
     path('users/demote/<int:user_id>/', views.demote_to_user, name='promote_to_user'),
-
+    path('send-email', views.send_email_view, name='send_email'),
+    path('list-requests', views.user_reservation_request_list_view, name='list_requests'),
+    path('list-returns', views.user_reservation_return_list_view, name='list_returns'),
 ]

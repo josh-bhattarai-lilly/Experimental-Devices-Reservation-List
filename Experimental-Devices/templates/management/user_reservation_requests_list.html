@@ -1,0 +1,33 @@
+{% include 'partials/banner.html' %}
+{% load static %}
+
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/free_devices.css' %}"> <!-- Link to the CSS file -->
+
+    <h2>User Reservation Requests</h2>
+
+    {% if reservation_requests %}
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Device Serial Number</th>
+                    <th>Status</th>
+                    <th>Requested At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in reservation_requests %}
+                    <tr>
+                        <td>{{ request.user.username }}</td>
+                        <td>{{ request.device.serial_number }}</td>
+                        <td>{{ request.status }}</td>
+                        <td>{{ request.created_at }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No reservation requests found.</p>
+    {% endif %}
+{% endblock %}
