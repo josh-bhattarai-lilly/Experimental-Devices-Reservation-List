@@ -220,22 +220,26 @@ send_email_view = SendEmaiLView.as_view()
 
 
 class UserReservationRequestListView(LoginRequiredMixin, TemplateView):
-    template_name = 'management/user_reservation_requests_list.html'  # Update with your template path
+    template_name = 'management/user_reservation_requests_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['reservation_requests'] = UserReservationRequest.objects.all().order_by('-created_at')
+        # Fetch pending and confirmed requests separately
+        context['pending_reservation_requests'] = UserReservationRequest.objects.filter(status='Pending').order_by('-created_at')
+        context['confirmed_reservation_requests'] = UserReservationRequest.objects.exclude(status='Pending').order_by('-created_at')
         return context
 
 user_reservation_request_list_view = UserReservationRequestListView.as_view()
 
 
 class UserReservationReturnListView(LoginRequiredMixin, TemplateView):
-    template_name = 'management/user_reservation_returns_list.html'  # Update with your template path
+    template_name = 'management/user_reservation_returns_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['reservation_returns'] = UserReservationReturn.objects.all().order_by('-created_at')
+        # Fetch pending and confirmed returns separately
+        context['pending_reservation_returns'] = UserReservationReturn.objects.filter(status='Pending').order_by('-created_at')
+        context['confirmed_reservation_returns'] = UserReservationReturn.objects.exclude(status='Pending').order_by('-created_at')
         return context
 
 user_reservation_return_list_view = UserReservationReturnListView.as_view()

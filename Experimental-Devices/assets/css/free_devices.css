@@ -3,30 +3,54 @@ table {
     border-collapse: collapse;
     margin-top: 20px;
 }
+
 th, td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
+
 th {
     background-color: #D52B1E; /* Lilly red */
     color: white;
+    text-align: left; /* Center align text in header */
+    font-weight: bold; /* Make header text bold */
 }
-tr:hover {
-    background-color: #f5f5f5;
+
+tr{
+background-color: #D52B1E
 }
+
 tbody tr:nth-child(even) {
     background-color: #f9f9f9;
 }
+
 tbody tr:nth-child(odd) {
     background-color: #ffffff;
 }
+
 @media (max-width: 600px) {
     table {
         font-size: 14px; /* Smaller text for mobile */
     }
 }
+
 .no-content {
     font-style: italic; /* Italics for the text */
     color: #82786F; /* Lilly dark gray color */
+}
+
+/* New styles for better header visibility */
+thead th {
+    background-color: #D52B1E; /* Lilly red */
+    color: white;
+}
+
+thead th:hover {
+    color: black; /* Darker shade on hover */
+}
+
+/* Additional styles for improved alignment */
+tbody td {
+    text-align: left; /* Align content to the left */
 }

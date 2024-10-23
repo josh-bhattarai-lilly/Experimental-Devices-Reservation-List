@@ -53,4 +53,74 @@
   {% else %}
     <p>You have no devices reserved.</p>
   {% endif %}
+
+  <h2>Your Reservation Requests</h2>
+
+  {% if reservation_requests %}
+    <table>
+      <thead>
+        <tr>
+          <th>Device Type</th>
+          <th>Serial Number</th>
+          <th>Status</th>
+          <th>Department</th> <!-- New column for department -->
+          <th>Role</th> <!-- New column for role -->
+          <th>Reason</th> <!-- New column for reason -->
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for request in reservation_requests %}
+          <tr>
+            <td>{{ request.device.get_device_type }}</td>
+            <td>{{ request.device.serial_number }}</td>
+            <td>{{ request.status }}</td>
+            <td>{{ request.department }}</td> <!-- Display department -->
+            <td>{{ request.role }}</td> <!-- Display role -->
+            <td>{{ request.reason }}</td> <!-- Display reason -->
+            <td>
+              <form method="post" action="{% url 'cancel_reservation_request' request.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Cancel Reservation Request</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>You have no reservation requests in progress.</p>
+  {% endif %}
+
+  <h2>Your Return Requests</h2>
+
+  {% if return_requests %}
+    <table>
+      <thead>
+        <tr>
+          <th>Device Type</th>
+          <th>Serial Number</th>
+          <th>Status</th>
+          <th>Actions</th> <!-- New header for actions -->
+        </tr>
+      </thead>
+      <tbody>
+        {% for request in return_requests %}
+          <tr>
+            <td>{{ request.device.get_device_type }}</td>
+            <td>{{ request.device.serial_number }}</td>
+            <td>{{ request.status }}</td>
+            <td>
+              <form method="post" action="{% url 'cancel_return_request' request.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Cancel Return Request</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>You have no return requests in progress.</p>
+  {% endif %}
 {% endblock %}

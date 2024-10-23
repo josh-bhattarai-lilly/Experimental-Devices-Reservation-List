@@ -6,7 +6,8 @@
 
     <h2>User Reservation Returns</h2>
 
-    {% if reservation_returns %}
+    <h3>Pending Returns</h3>
+    {% if pending_reservation_returns %}
         <table>
             <thead>
                 <tr>
@@ -14,10 +15,41 @@
                     <th>Device Serial Number</th>
                     <th>Status</th>
                     <th>Requested At</th>
+                    <th>Actions</th> <!-- Actions for approve/deny -->
                 </tr>
             </thead>
             <tbody>
-                {% for return in reservation_returns %}
+                {% for return in pending_reservation_returns %}
+                    <tr>
+                        <td>{{ return.user.username }}</td>
+                        <td>{{ return.device.serial_number }}</td>
+                        <td>{{ return.status }}</td>
+                        <td>{{ return.created_at }}</td>
+                        <td>
+                            <a href="{% url 'approve_return' return.id %}">Approve</a> |
+                            <a href="{% url 'deny_return' return.id %}">Deny</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No pending reservation returns found.</p>
+    {% endif %}
+
+    <h3>Confirmed Returns</h3>
+    {% if confirmed_reservation_returns %}
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Device Serial Number</th>
+                    <th>Status</th>
+                    <th>Processed At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for return in confirmed_reservation_returns %}
                     <tr>
                         <td>{{ return.user.username }}</td>
                         <td>{{ return.device.serial_number }}</td>
@@ -28,6 +60,6 @@
             </tbody>
         </table>
     {% else %}
-        <p>No reservation returns found.</p>
+        <p>No confirmed reservation returns found.</p>
     {% endif %}
 {% endblock %}

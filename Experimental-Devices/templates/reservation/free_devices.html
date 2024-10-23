@@ -2,55 +2,119 @@
 {% load static %}
 
 {% block content %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/free_devices.css' %}"> <!-- Link to the CSS file -->
-
+    <link rel="stylesheet" type="text/css" href="{% static 'css/free_devices.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <br>
     <h2>Available Free Devices</h2>
 
-    {% if free_devices %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Device Type</th>
-                    <th>Serial Number</th>
-                    <th>Description</th>
-                    <th>Location</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for device in free_devices %}
+    <div id="devicesTable">
+        {% if free_devices %}
+            <table class="table table-striped"> <!-- Added table-striped class -->
+                <thead>
                     <tr>
-                        <td>
-                            {{ device.get_device_type }}
-                        </td>
-                        <td>
-                            {{ device.serial_number }}
-                        </td>
-                        <td>
-                            {% if device.description %}
-                                {{ device.description }}
-                            {% else %}
-                                <span class="no-content">No current description</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if device.location %}
-                                {{ device.location }}
-                            {% else %}
-                                <span class="no-content">No location listed</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <form method="post" action="{% url 'reserve_device' device.serial_number %}" style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit">Reserve Now</button>
-                            </form>
-                        </td>
+                        <th>Device Type</th>
+                        <th>Serial Number</th>
+                        <th>Description</th>
+                        <th>Location</th>
+                        <th>Action</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Sorry, no devices available!<br><br><a href="{% url 'waitlist' %}">Click here to be added to the waitlist!</a></p>
-    {% endif %}
+                </thead>
+                <tbody>
+                    {% for device in free_devices %}
+                        <tr data-serial="{{ device.serial_number }}">
+                            <td>{{ device.get_device_type }}</td>
+                            <td>{{ device.serial_number }}</td>
+                            <td>{{ device.description|default:"No current description" }}</td>
+                            <td>{{ device.location|default:"No location listed" }}</td>
+                            <td>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reserveDeviceModal"
+                                    data-device-id="{{ device.serial_number }}">
+                                    Reserve Now
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Sorry, no devices available!<br><br><a href="{% url 'waitlist' %}">Click here to be added to the waitlist!</a></p>
+        {% endif %}
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="reserveDeviceModal" tabindex="-1" aria-labelledby="reserveDeviceModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="reserveDeviceModalLabel">Reserve Device</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="reserveDeviceForm" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="device_serial_number" id="deviceSerialNumber" value="">
+
+              <div class="mb-3">
+                <label for="department" class="form-label">Department</label>
+                <input type="text" class="form-control" id="department" name="department" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="role" class="form-label">Role</label>
+                <input type="text" class="form-control" id="role" name="role" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="reason" class="form-label">Reason for Reservation</label>
+                <textarea class="form-control" id="reason" name="reason" rows="3" required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Submit Reservation</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var reserveDeviceModal = document.getElementById('reserveDeviceModal');
+      reserveDeviceModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget; // Button that triggered the modal
+        var deviceSerial = button.getAttribute('data-device-id'); // Extract info from data-* attributes
+        var modalForm = reserveDeviceModal.querySelector('#deviceSerialNumber');
+        modalForm.value = deviceSerial; // Set the device serial number in the hidden input
+
+        // Set the form action URL to include the device serial number
+        var form = reserveDeviceModal.querySelector('#reserveDeviceForm');
+        form.action = "{% url 'reserve_device' 'placeholder' %}".replace('placeholder', deviceSerial);
+      });
+
+      $('#reserveDeviceForm').on('submit', function(event) {
+          event.preventDefault(); // Prevent default form submission
+
+          var form = $(this); // jQuery form object
+          $.ajax({
+              type: form.attr('method'),
+              url: form.attr('action'),
+              data: form.serialize(), // Serialize the form data
+              success: function(response) {
+                  // On successful reservation, remove the reserved device row
+                  $('tr[data-serial="' + response.device_serial_number + '"]').remove();
+
+                  // Close the modal
+                  $('#reserveDeviceModal').modal('hide');
+
+                  // Optionally, display a success message
+                  alert('Reservation request submitted successfully!');
+              },
+              error: function(xhr, status, error) {
+                  // Handle errors
+                  alert('An error occurred: ' + error);
+              }
+          });
+      });
+    </script>
+
 {% endblock %}

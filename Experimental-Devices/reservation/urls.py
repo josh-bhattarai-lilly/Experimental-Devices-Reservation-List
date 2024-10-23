@@ -13,4 +13,6 @@ urlpatterns = [
     path('return/<int:device_id>/', views.return_device_view, name='return_device'),
     path('approve_return/<int:return_id>/', views.approve_return_view, name='approve_return'),
     path('deny_return/<int:return_id>/', views.deny_return_view, name='deny_return'),
+    path('cancel-return-request/<int:request_id>/', views.cancel_return_request_view, name='cancel_return_request'),
+    path('cancel-reservation-request/<int:request_id>/', views.cancel_reservation_request_view, name='cancel_reservation_request'),
 ]
