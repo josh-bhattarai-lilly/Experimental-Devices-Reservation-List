@@ -26,7 +26,7 @@
                     <div class="profile-pic-wrapper">
                         <img src="{% url 'profile_picture' %}" alt="Profile Picture" class="profile-pic">
                         <div class="dropdown-content">
-                            Hello {{request.user.username}}
+                            Hello {{request.user.name}}
                             <a href="{% url 'your_devices' %}">My Profile</a>
                             {% if request.user.is_staff or request.user.is_superuser %}
                                 <a href="{% url 'admin_dashboard' %}">Admin Dashboard</a>

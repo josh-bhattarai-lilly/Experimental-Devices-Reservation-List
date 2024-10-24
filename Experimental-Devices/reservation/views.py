@@ -78,7 +78,7 @@ class ReserveDeviceView(LoginRequiredMixin, View):
         deny_url = request.build_absolute_uri(reverse('deny_reservation', args=[reservation_request.id]))
 
         email_body = f"""
-        A new reservation request has been made by {request.user.username} for device {device.serial_number}.
+        A new reservation request has been made by {request.user.name} for device {device.serial_number}.
         Department: {department}
         Role: {role}
         Reason: {reason}
@@ -89,7 +89,7 @@ class ReserveDeviceView(LoginRequiredMixin, View):
         Deny: {deny_url}
         """
 
-        subject = 'New Device Reservation Request'
+        subject = f'New Device Reservation Request from {request.user.name}'
 
         # Use the send_user_email function to send an email to each admin
         for admin in admin_users:
@@ -100,6 +100,53 @@ class ReserveDeviceView(LoginRequiredMixin, View):
 
 # Call the as_view() method here
 reserve_device_view = ReserveDeviceView.as_view()
+
+
+class ReturnDeviceView(LoginRequiredMixin, View):
+    def post(self, request, device_id):
+        # Iterate over all subclasses to find the device with the given serial number
+        device = None
+        for subclass in Device.get_all_subclasses():
+            try:
+                device = subclass.objects.get(serial_number=device_id)
+                break  # Stop the loop if the device is found
+            except subclass.DoesNotExist:
+                continue  # Try the next subclass if not found
+
+        if not device:
+            # If no device is found, return a 404 error
+            return get_object_or_404(Device.get_all_subclasses(), serial_number=device_id)
+
+        # Create a UserReservationReturn request
+        return_request = UserReservationReturn.objects.create(
+            user=request.user,
+            content_type=ContentType.objects.get_for_model(device),
+            object_id=device.serial_number,  # Use serial_number instead of device.id
+            status='Pending'
+        )
+
+        # Notify admins about the return request
+        admin_emails = CustomUser.objects.filter(is_staff=True).values_list('email', flat=True)
+        allow_url = request.build_absolute_uri(reverse('approve_return', args=[return_request.id]))
+        deny_url = request.build_absolute_uri(reverse('deny_return', args=[return_request.id]))
+
+        subject = f'Device return from {request.user.name}'
+        email_body = f"""
+        A return request has been made by {request.user.email} for device {device.serial_number}.
+        Please review the request:
+
+        Approve: {allow_url}
+        Deny: {deny_url}
+        """
+
+        # Send email to admins using CustomUser's send_user_email method
+        for email in admin_emails:
+            admin = CustomUser.objects.get(email=email)
+            admin.send_user_email(subject, email_body)
+
+        return redirect('your_devices')
+
+return_device_view = ReturnDeviceView.as_view()
 
 
 class YourDevicesView(LoginRequiredMixin, ListView):
@@ -158,52 +205,6 @@ class DenyReservationView(LoginRequiredMixin, View):
         return redirect('list_requests')
 
 deny_reservation_view = DenyReservationView.as_view()
-
-
-class ReturnDeviceView(LoginRequiredMixin, View):
-    def post(self, request, device_id):
-        # Iterate over all subclasses to find the device with the given serial number
-        device = None
-        for subclass in Device.get_all_subclasses():
-            try:
-                device = subclass.objects.get(serial_number=device_id)
-                break  # Stop the loop if the device is found
-            except subclass.DoesNotExist:
-                continue  # Try the next subclass if not found
-
-        if not device:
-            # If no device is found, return a 404 error
-            return get_object_or_404(Device.get_all_subclasses(), serial_number=device_id)
-
-        # Create a UserReservationReturn request
-        return_request = UserReservationReturn.objects.create(
-            user=request.user,
-            content_type=ContentType.objects.get_for_model(device),
-            object_id=device.serial_number,  # Use serial_number instead of device.id
-            status='Pending'
-        )
-
-        # Notify admins about the return request
-        admin_emails = CustomUser.objects.filter(is_staff=True).values_list('email', flat=True)
-        allow_url = request.build_absolute_uri(reverse('approve_return', args=[return_request.id]))
-        deny_url = request.build_absolute_uri(reverse('deny_return', args=[return_request.id]))
-
-        email_body = f"""
-        A return request has been made by {request.user.username} for device {device.serial_number}.
-        Please review the request:
-
-        Approve: {allow_url}
-        Deny: {deny_url}
-        """
-
-        # Send email to admins using CustomUser's send_user_email method
-        for email in admin_emails:
-            admin = CustomUser.objects.get(email=email)
-            admin.send_user_email('Device Return Request', email_body)
-
-        return redirect('your_devices')
-
-return_device_view = ReturnDeviceView.as_view()
 
 
 class ApproveReturnView(LoginRequiredMixin, View):
