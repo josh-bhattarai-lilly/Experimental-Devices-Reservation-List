@@ -1,0 +1,132 @@
+/* Add this at the top of your existing CSS file */
+body {
+    background-color: #F3F0ED; /* Set background color for all pages using this banner */
+    margin: 0; /* Remove default margin */
+}
+
+/* Scoped styles for the banner */
+.banner-wrapper .banner {
+    display: flex;
+    align-items: center;
+    background-color: #D52B1E; /* Hex color for the banner */
+    padding: 10px; /* Adjust padding as needed */
+    height: 60px; /* Set a fixed height for the banner */
+}
+
+.banner-wrapper .banner-logo {
+    position: relative;
+    display: flex; /* Use flexbox to align text and logo */
+    align-items: center; /* Center align vertically */
+    text-decoration: none;
+}
+
+.banner-wrapper .default-logo,
+.banner-wrapper .hover-logo {
+    max-height: 60px; /* Limit height to a smaller size */
+    width: auto; /* Maintain aspect ratio */
+}
+
+.banner-wrapper .hover-logo {
+    display: none; /* Hide hover logo by default */
+}
+
+.banner-wrapper .banner-logo:hover .default-logo {
+    display: none; /* Hide default on hover */
+}
+
+.banner-wrapper .banner-logo:hover .hover-logo {
+    display: block; /* Show hover logo on hover */
+}
+
+.banner-wrapper .logo-text {
+    color: white; /* Default text color */
+    margin-left: -10px; /* Space between logo and text */
+    font-size: 2em; /* Adjust size as needed */
+    font-family: Arial, sans-serif; /* Specify Arial as the primary font */
+    font-weight: bold; /* Set the font weight to bold */
+}
+
+.banner-wrapper .banner-logo:hover .logo-text {
+    color: black; /* Change text color on hover */
+}
+
+.banner-wrapper .banner-buttons-left {
+    display: flex; /* Use flexbox to arrange buttons horizontally */
+    align-items: center; /* Center align buttons vertically */
+}
+
+.banner-wrapper .banner-buttons-right {
+    margin-left: auto; /* Push this container to the right */
+}
+
+.banner-wrapper .button {
+    background-color: transparent; /* No background color */
+    color: white; /* Text color is white by default */
+    padding: 10px 15px; /* Button padding */
+    margin-left: 10px; /* Space between buttons */
+    text-decoration: none; /* Remove underline */
+    border-radius: 5px; /* Rounded corners */
+    border: 2px solid transparent; /* Optional: Add border with transparent color */
+    font-family: Arial, sans-serif; /* Specify Arial as the primary font */
+}
+
+.banner-wrapper .button:hover {
+    background-color: #A39891; /* Change background on hover */
+    color: black; /* Keep text color white on hover */
+    border: 2px solid white; /* Optional: Change border color on hover */
+}
+
+/* Profile Picture Wrapper */
+.profile-pic-wrapper {
+    position: relative; /* To contain the dropdown */
+    display: inline-block; /* Ensures it doesn't take up the full width */
+    margin-left: 15px; /* Adds space between buttons and profile pic */
+}
+
+/* Profile Picture Image Styling */
+.profile-pic {
+    width: 60px; /* Profile picture size (smaller size) */
+    height: 60px; /* Ensure square shape */
+    max-width: 60px; /* Prevents it from growing too large */
+    max-height: 60px; /* Prevents it from growing too large */
+    object-fit: cover; /* Ensures the image maintains its aspect ratio */
+    border-radius: 50%; /* Makes the image circular */
+    border: 2px solid white; /* Adds a border for a polished look */
+}
+
+/* Hover effect for the profile picture */
+.profile-pic-wrapper:hover .profile-pic {
+    border-color: black; /* Change border color on hover */
+}
+
+/* Dropdown Menu Styling */
+.dropdown-content {
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 60px; /* Position directly below the banner */
+    right: 0; /* Align the dropdown to the right of the image */
+    background-color: #D52B1E; /* Change to red to match the banner */
+    min-width: 120px; /* Minimum width of the dropdown */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow for dropdown */
+    border-radius: 5px; /* Rounded corners */
+    z-index: 1; /* Ensure it appears above other content */
+    border: 1px solid #ccc; /* Optional: Add a border to the dropdown */
+}
+
+/* Dropdown links */
+.dropdown-content a {
+    color: white; /* Text color */
+    padding: 10px; /* Space inside dropdown */
+    text-decoration: none; /* Remove underline */
+    display: block; /* Full clickable block */
+    font-family: Arial, sans-serif; /* Consistent font */
+}
+
+.dropdown-content a:hover {
+    background-color: #A39891; /* Change background on hover */
+}
+
+/* Show dropdown on hover */
+.profile-pic-wrapper:hover .dropdown-content {
+    display: block; /* Display dropdown when hovering over the profile picture */
+}
