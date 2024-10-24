@@ -132,8 +132,15 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Define the path to the secrets.json file
-with open(os.path.join(BASE_DIR, 'secrets.json')) as f:
-    secrets = json.load(f)
+secrets_file = os.path.join(BASE_DIR, 'secrets.json')
+
+try:
+    # Try loading secrets from the secrets.json file
+    with open(secrets_file) as f:
+        secrets = json.load(f)
+except FileNotFoundError:
+    # If the file is not found, load secrets from the environment variable
+    secrets = json.loads(os.getenv('EDRL_SECRETS', '{}'))
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp-z1-nomx.lilly.com'
