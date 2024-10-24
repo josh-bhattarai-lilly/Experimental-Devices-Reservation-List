@@ -13,8 +13,17 @@ import os
 from pathlib import Path
 import json
 
+DEVELOPMENT_ENVIRONMENT = os.getenv("DEVELOPMENT_ENVIRONMENT")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+if DEVELOPMENT_ENVIRONMENT == 'dev':
+    BASE_URL = 'https://experimentaldevices1-mdmmigration-dev.apps.ocp4-npd.am.lilly.com'
+elif DEVELOPMENT_ENVIRONMENT == 'prod':
+    BASE_URL = 'https://ddl.lilly.com'
+else:
+    BASE_URL = 'http://localhost:8000'
 
 
 # Quick-start development settings - unsuitable for production
@@ -24,9 +33,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-0+9sp%h-p(cgq+!_*)$2l3q_1f*+$-yq&&rjeo@tl&&9y9ycsn'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False if DEVELOPMENT_ENVIRONMENT else True
 
 ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
     'experimentaldevices1-mdmmigration-dev.apps.ocp4-npd.am.lilly.com'
 ]
 
@@ -153,18 +164,16 @@ DEFAULT_FROM_EMAIL = 'ExperimentalDevices@lilly.com'  # Default from email, set 
 # Add this line to use the custom user model
 AUTH_USER_MODEL = 'lilly_auth.CustomUser'
 
-
+MSAL_CLIENT_ID = secrets['client_id']
+MSAL_CLIENT_SECRET = secrets['client_secret_value']
+MSAL_AUTHORITY = f'https://login.microsoftonline.com/{secrets["tenant_id"]}'
+MSAL_REDIRECT_URI = f'{BASE_URL}/auth/callback/'
+MSAL_USER_INFO_ENDPOINT = 'https://graph.microsoft.com/v1.0/me'
 # MSAL configuration
 MSAL_CONFIG = {
     'client_id': secrets['client_id'],
     'client_secret': secrets['client_secret_value'],
     'authority': f'https://login.microsoftonline.com/{secrets["tenant_id"]}',
-    'redirect_uri': 'http://localhost:8000/auth/callback/',
+    'redirect_uri': MSAL_REDIRECT_URI,
     'scopes': ['User.Read'],
 }
-
-MSAL_CLIENT_ID = secrets['client_id']
-MSAL_CLIENT_SECRET = secrets['client_secret_value']
-MSAL_AUTHORITY = f'https://login.microsoftonline.com/{secrets["tenant_id"]}'
-MSAL_REDIRECT_URI = 'http://localhost:8000/auth/callback/'
-MSAL_USER_INFO_ENDPOINT = 'https://graph.microsoft.com/v1.0/me'
